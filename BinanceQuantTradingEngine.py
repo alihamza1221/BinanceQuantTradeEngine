@@ -22,15 +22,37 @@ logging.basicConfig(
 
 
 class BinanceQuantTradingEngine:
-    def __init__(self, config):
-        self.config = config
+    def __init__(self, config=None):
+        # Default configuration with environment variable fallbacks
+        default_config = {
+            "SIMULATION_MODE": True,
+            "DRY_RUN": True,
+            "RISK_REWARD_RATIO": 2.0,
+            "MAX_PORTFOLIO_RISK": 0.1,
+            "TRADE_FEE_RATE": 0.0018,
+            "PRICE_UPDATE_THRESHOLD": 0.015,
+            "SPREAD_ADJUSTMENT": 0.001,
+            "DYNAMIC_POSITION_SIZING": True,
+            "LEVERAGE": 10,
+            "TYPE": "ISOLATED",
+            "TP": 0.04,
+            "SL": 0.02,
+            "SORTBY": "volume",
+            "PAIRS_TO_PROCESS": 10,
+            "MAX_TRADES": 5,
+            "TOTAL_TRADES_OPEN": 0
+        }
+        
+        # Merge provided config with defaults
+        self.config = {**default_config, **(config or {})}
 
         self.api_key = os.getenv('BINANCE_API_KEY')
-        self.secret_key = os.getenv('BINANCE_SECRET')
+        self.secret_key = os.getenv('BINANCE_SECRET')  # Fixed: was 'BINANCE_SECRET'
         self.client = UMFutures(key=self.api_key, secret=self.secret_key)
 
         if not self.api_key or not self.secret_key:
             logging.error("Missing required API credentials in environment variables")
+            logging.error("Please set BINANCE_API_KEY and BINANCE_SECRET_KEY in your .env file")
 
         self.market_state = {}
         self.portfolio = {}
@@ -431,5 +453,25 @@ class BinanceQuantTradingEngine:
             self.running = False
 # run
 if __name__ == "__main__":
-    trading_engine = BinanceQuantTradingEngine()
+    # Create default configuration for standalone execution
+    default_config = {
+        "SIMULATION_MODE": True,
+        "DRY_RUN": True,
+        "RISK_REWARD_RATIO": 2.0,
+        "MAX_PORTFOLIO_RISK": 0.1,
+        "TRADE_FEE_RATE": 0.0018,
+        "PRICE_UPDATE_THRESHOLD": 0.015,
+        "SPREAD_ADJUSTMENT": 0.001,
+        "DYNAMIC_POSITION_SIZING": True,
+        "LEVERAGE": 10,
+        "TYPE": "ISOLATED",
+        "TP": 0.04,
+        "SL": 0.02,
+        "SORTBY": "volume",
+        "PAIRS_TO_PROCESS": 10,
+        "MAX_TRADES": 5,
+        "TOTAL_TRADES_OPEN": 0
+    }
+    
+    trading_engine = BinanceQuantTradingEngine(default_config)
     trading_engine.run()

@@ -1,0 +1,25 @@
+# Production requirements for Railway deployment
+requests>=2.32.4
+pandas>=2.3.0
+numpy>=2.3.1
+
+# Machine Learning
+scikit-learn>=1.7.0
+
+# Technical Analysis
+TA-Lib>=0.4.24
+
+# Environment variables
+python-dotenv>=1.1.1
+
+# Binance API
+python-binance>=1.0.19
+
+# FastAPI and Web Server
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.5.0
+
+# Additional dependencies
+aiofiles>=23.2.1
+asyncio-mqtt>=0.16.1

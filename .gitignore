@@ -130,3 +130,18 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Docker and Container files
+.dockerignore
+
+# Railway deployment
+.railway/
+
+# Docker Compose override files
+docker-compose.override.yml
+docker-compose.local.yml
+
+# Environment files for different stages
+.env.railway
+.env.production
+.env.staging
