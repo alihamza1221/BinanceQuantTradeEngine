@@ -294,12 +294,17 @@ class BinanceQuantTradingEngine:
 
             resp1 = self.client.new_order(symbol=pair, side=side, type='LIMIT', quantity=qty,   timeInForce='GTC', price=p_price)
             logging.info(f"Order placed: {side} {qty} {pair} @ {p_price}")
+            #sleep 
+            time.sleep(2)
 
             self.config["TOTAL_TRADES_OPEN"] += 1
 
             sl_price = round(price - price * SL, price_precision)
             resp2 = self.client.new_order(symbol=pair, side='SELL', type='STOP_MARKET',     quantity=qty, stopPrice=sl_price)
-
+            #sleep
+            time.sleep(2)
+            
+            # Take profit order
             tp_price = round(price + price * TP, price_precision)
             resp3 = self.client.new_order(symbol=pair, side='SELL', type='TAKE_PROFIT_MARKET',  quantity=qty, stopPrice=tp_price)
 
