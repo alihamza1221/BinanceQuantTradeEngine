@@ -2,45 +2,36 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install system dependencies for TA-Lib and build tools
+# 1. Install build essentials and dependencies
 RUN apt-get update && apt-get install -y \
-    gcc \
-    g++ \
-    make \
-    wget \
-    build-essential \
+    build-essential autoconf automake libtool pkg-config git \
+    gcc g++ make wget \
     && rm -rf /var/lib/apt/lists/*
 
-# Install TA-Lib C library
-RUN wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz && \
-    tar -xzf ta-lib-0.4.0-src.tar.gz && \
-    cd ta-lib/ && \
-    ./configure --prefix=/usr && \
+# 2. Clone & build TA-Lib C
+RUN git clone https://github.com/TA-Lib/ta-lib.git /tmp/ta-lib && \
+    cd /tmp/ta-lib && \
+    ./autogen.sh && \
+    ./configure --prefix=/usr/local && \
+    make clean && \
     make && \
     make install && \
-    cd .. && \
-    rm -rf ta-lib ta-lib-0.4.0-src.tar.gz
+    cd /app && \
+    rm -rf /tmp/ta-lib
 
-# Install Python dependencies (numpy first for TA-Lib)
+# 3. Refresh the linker
+RUN echo "/usr/local/lib" > /etc/ld.so.conf.d/ta-lib.conf && ldconfig
+
+# 4. Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir numpy
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
+# 5. Copy app code and set up
 COPY . .
-
-# Make startup script executable
 RUN chmod +x start.sh
-
-# Create logs directory
 RUN mkdir -p /app/logs
-
 ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
-
 EXPOSE 8000
-
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:8000/health')" || exit 1
-
 CMD ["./start.sh"]
