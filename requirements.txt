@@ -2,7 +2,7 @@
 requests>=2.32.4
 pandas>=2.3.0
 
-
+numpy==1.26.3
 # Machine Learning
 scikit-learn>=1.7.0
 
