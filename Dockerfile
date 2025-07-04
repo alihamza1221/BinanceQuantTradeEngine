@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
 # 2. Clone & build TA-Lib C
 RUN git clone https://github.com/TA-Lib/ta-lib.git /tmp/ta-lib && \
     cd /tmp/ta-lib && \
+    chmod +x autogen.sh && \
     ./autogen.sh && \
     ./configure --prefix=/usr/local && \
     make clean && \
@@ -18,6 +19,7 @@ RUN git clone https://github.com/TA-Lib/ta-lib.git /tmp/ta-lib && \
     make install && \
     cd /app && \
     rm -rf /tmp/ta-lib
+
 
 # 3. Refresh the linker
 RUN echo "/usr/local/lib" > /etc/ld.so.conf.d/ta-lib.conf && ldconfig
