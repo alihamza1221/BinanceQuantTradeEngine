@@ -13,7 +13,7 @@ TA-Lib>=0.4.0
 python-dotenv>=1.1.1
 
 #Binance Client
-binance-futures-connector=4.1.0
+binance-futures-connector>=4.1.0
 
 # FastAPI and Web Server
 fastapi>=0.104.0
