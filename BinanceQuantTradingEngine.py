@@ -47,7 +47,7 @@ class BinanceQuantTradingEngine:
         self.config = {**default_config, **(config or {})}
 
         self.api_key = os.getenv('BINANCE_API_KEY')
-        self.secret_key = os.getenv('BINANCE_SECRET')  # Fixed: was 'BINANCE_SECRET'
+        self.secret_key = os.getenv('BINANCE_SECRET_KEY')  # Fixed: was 'BINANCE_SECRET'
         self.client = UMFutures(key=self.api_key, secret=self.secret_key)
 
         if not self.api_key or not self.secret_key:

@@ -5,7 +5,7 @@
 echo "🚀 Starting Binance Trading Bot..."
 
 # Check if required environment variables are set
-if [ -z "$BINANCE_API_KEY" ] || [ -z "$BINANCE_SECRET" ]; then
+if [ -z "$BINANCE_API_KEY" ] || [ -z "$BINANCE_SECRET_KEY" ]; then
     echo "❌ Missing required environment variables: BINANCE_API_KEY and BINANCE_SECRET_KEY"
     echo "ℹ️  Please set these in your Railway dashboard"
     exit 1
