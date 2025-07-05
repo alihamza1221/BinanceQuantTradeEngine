@@ -41,6 +41,15 @@ class ConfigUpdate(BaseModel):
     key: str
     value: Union[float, int, bool, str]
 
+# Health check endpoint for Railway
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy", "service": "binance-trading-bot"}
+
+@app.get("/")
+async def root():
+    return {"message": "Binance Quant Trading Bot API", "status": "running"}
+
 @app.get("/config")
 def get_config():
     return CONFIG
