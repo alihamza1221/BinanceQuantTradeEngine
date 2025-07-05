@@ -329,11 +329,12 @@ class BinanceQuantTradingEngine:
                     pos.append(elem['symbol'])
             return pos
         except ClientError as error:
-            print(
+            logging.info(
                 "Found error. status: {}, error code: {}, error message: {}".format(
                     error.status_code, error.error_code, error.error_message
                 )
             )
+            print("error in get_pos")
     def check_orders(self):
         try:
             response = self.client.get_orders(recvWindow=6000)

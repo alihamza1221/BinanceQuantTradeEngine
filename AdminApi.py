@@ -69,21 +69,37 @@ def update_config(update: ConfigUpdate):
 
 @app.post("/refresh")
 def run_refresh():
-    result = engine.refresh_data()
-    return {"refresh": result}
+    try:
+        result = engine.refresh_data()
+        return {"refresh": result}
+    except Exception as e:
+        print(f"Error refreshing data: {e}")
+        return {"status": "error", "message": str(e)}
 
 @app.post("/run_strategy")
 def run_strategy():
-    engine.execute_strategy()
-    return {"status": "Strategy executed"}
+    try:
+        engine.execute_strategy()
+        return {"status": "Strategy executed"}
+    except Exception as e:
+        print(f"Error executing strategy: {e}")
+        return {"status": "error", "message": str(e)}    
 
 @app.get("/positions")
 def get_positions():
-    return {"positions": engine.get_pos()}
+    try:
+        return {"positions": engine.get_pos()}
+    except Exception as e:
+        print(f"Error getting positions: {e}")
+        return {"positions": [], "status": "error", "message": str(e)}
 
 @app.get("/orders")
 def get_orders():
-    return {"orders": engine.check_orders()}
+    try:
+        return {"orders": engine.check_orders()}
+    except Exception as e:
+        print(f"Error getting orders: {e}")
+        return {"orders": [], "status": "error", "message": str(e)}
 
 @app.get("/status")
 def get_status():
@@ -95,13 +111,23 @@ def get_status():
 
 @app.post("/start")
 def start_bot():
-    engine.run()
-    return {"message": "success"}
+    try:
+        engine.run()
+        return {"message": "success"}
+    except Exception as e:
+        print(f"Error starting bot: {e}")
+        return {"status": "error", "message": str(e)}    
 
 @app.post("/stop")
 def stop_bot():
-    engine.stop()
-    return {"message": "Bot stopped"}
+    try:
+        if not engine.running:
+            return {"message": "Bot is not running"}
+        engine.stop()
+        return {"message": "Bot stopped"}
+    except Exception as e:
+        print(f"Error stopping bot: {e}")
+        return {"status": "error", "message": str(e)}
 
 #to run:
 #uvicorn AdminApi:app --reload --port 8000
