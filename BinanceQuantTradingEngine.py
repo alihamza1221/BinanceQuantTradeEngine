@@ -22,29 +22,9 @@ logging.basicConfig(
 
 
 class BinanceQuantTradingEngine:
-    def __init__(self, config=None):
-        # Default configuration with environment variable fallbacks
-        default_config = {
-            "SIMULATION_MODE": True,
-            "DRY_RUN": True,
-            "RISK_REWARD_RATIO": 2.0,
-            "MAX_PORTFOLIO_RISK": 0.1,
-            "TRADE_FEE_RATE": 0.0018,
-            "PRICE_UPDATE_THRESHOLD": 0.015,
-            "SPREAD_ADJUSTMENT": 0.001,
-            "DYNAMIC_POSITION_SIZING": True,
-            "LEVERAGE": 10,
-            "TYPE": "ISOLATED",
-            "TP": 0.04,
-            "SL": 0.02,
-            "SORTBY": "volume",
-            "PAIRS_TO_PROCESS": 10,
-            "MAX_TRADES": 5,
-            "TOTAL_TRADES_OPEN": 0
-        }
-        
+    def __init__(self, config=None):        
         # Merge provided config with defaults
-        self.config = {**default_config, **(config or {})}
+        self.config = {**(config or {})}
 
         self.api_key = os.getenv('BINANCE_API_KEY')
         self.secret_key = os.getenv('BINANCE_SECRET_KEY')  # Fixed: was 'BINANCE_SECRET'
@@ -319,7 +299,7 @@ class BinanceQuantTradingEngine:
             #sleep 
             time.sleep(2)
 
-            self.config["TOTAL_TRADES_OPEN"] += 1
+            self.config["TOTAL_TRADES_OPEN"] = len(self.get_pos()) or self.config["TOTAL_TRADES_OPEN"] + 1
 
             sl_price = round(price - price * SL, price_precision)
             resp2 = self.client.new_order(symbol=pair, side='SELL', type='STOP_MARKET',     quantity=qty, stopPrice=sl_price)
@@ -451,27 +431,3 @@ class BinanceQuantTradingEngine:
         except KeyboardInterrupt:
             logging.info("Engine stopped by user")
             self.running = False
-# run
-if __name__ == "__main__":
-    # Create default configuration for standalone execution
-    default_config = {
-        "SIMULATION_MODE": True,
-        "DRY_RUN": True,
-        "RISK_REWARD_RATIO": 2.0,
-        "MAX_PORTFOLIO_RISK": 0.1,
-        "TRADE_FEE_RATE": 0.0018,
-        "PRICE_UPDATE_THRESHOLD": 0.015,
-        "SPREAD_ADJUSTMENT": 0.001,
-        "DYNAMIC_POSITION_SIZING": True,
-        "LEVERAGE": 10,
-        "TYPE": "ISOLATED",
-        "TP": 0.04,
-        "SL": 0.02,
-        "SORTBY": "volume",
-        "PAIRS_TO_PROCESS": 10,
-        "MAX_TRADES": 5,
-        "TOTAL_TRADES_OPEN": 0
-    }
-    
-    trading_engine = BinanceQuantTradingEngine(default_config)
-    trading_engine.run()
